@@ -24,6 +24,10 @@ class Client(object):
         _getattr = super(Client, self).__getattribute__
         attributes = _getattr("_attributes")
         attributes = deepcopy(attributes)
+        # Hack to get around global keyword issue where client.endpoint.global.test.method() 
+        # throws a syntax error
+        if name == "global_":
+            name = "global"
         attributes["_path"].append(name)
         attributes["oauth"] = _getattr("_http")
         return Client(**attributes)
